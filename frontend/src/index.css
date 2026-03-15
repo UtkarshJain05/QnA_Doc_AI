@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 26% 10%;
+    --foreground: 210 40% 96%;
+
+    --card: 220 17% 14%;
+    --card-foreground: 210 40% 96%;
+
+    --popover: 220 17% 14%;
+    --popover-foreground: 210 40% 96%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 13% 20%;
+    --secondary-foreground: 210 40% 96%;
+
+    --muted: 220 13% 20%;
+    --muted-foreground: 215 20% 55%;
+
+    --accent: 220 13% 25%;
+    --accent-foreground: 210 40% 96%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 20%;
+    --input: 220 13% 18%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 220 26% 10%;
+    --sidebar-foreground: 210 40% 96%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 13% 20%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 220 13% 20%;
+    --sidebar-ring: 217 91% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl;
+  }
+
+  .glow-border {
+    box-shadow: 0 0 15px hsl(217 91% 60% / 0.15), 0 0 30px hsl(217 91% 60% / 0.05);
+  }
+
+  .btn-glow {
+    @apply relative overflow-hidden transition-all duration-300;
+    background: linear-gradient(135deg, #22d3ee, #3b82f6, #6366f1);
+  }
+
+  .btn-glow:hover {
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.4), 0 0 40px rgba(99, 102, 241, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .gradient-bg {
+    background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-20px) scale(1.05); }
+  }
+}
