@@ -1,5 +1,13 @@
-# QnA Doc AI - Intelligent PDF Assistant (RAG Pipeline)
+<!-- # <img src="frontend/public/favicon.png" alt="Logo" width="35" align="top" /> QnA Doc AI - Intelligent PDF Assistant (RAG Pipeline) -->
+<div align="center">
+  <img src="frontend/public/favicon.png" alt="QnA Doc AI Logo" width="120" />
+  <h1>QnA Doc AI</h1>
+  <p><strong>Intelligent PDF Assistant (RAG Pipeline)</strong></p>
+</div>
 
+<br/>
+
+A full-stack Retrieval-Augmented Generation (RAG) application that allows users to upload PDF documents and have intelligent, context-aware conversations about the content.
 A full-stack Retrieval-Augmented Generation (RAG) application that allows users to upload PDF documents and have intelligent, context-aware conversations about the content. 
 
 This project utilizes advanced vector embeddings, semantic search, and large language models, with a built-in OCR fallback for complex scanned documents.
