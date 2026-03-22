@@ -88,7 +88,7 @@ const ChatPage = () => {
 
   return (
     // FIX 1: Changed h-screen to h-[100dvh] and added overflow-hidden to lock the background
-    <div className="fixed inset-0 flex w-full flex-col overflow-hidden bg-background">
+    <div className="fixed inset-0 flex flex-col w-full overflow-hidden bg-background">
       <WaveBackground />
       <HeaderBar onNewPdf={handleNewPdf} onEndSession={handleEndSession} />
 
