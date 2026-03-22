@@ -83,3 +83,11 @@
     50% { transform: translateY(-20px) scale(1.05); }
   }
 }
+
+
+/* iOS Safari specific override */
+@supports (-webkit-touch-callout: none) {
+  .fixed.inset-0 {
+    height: -webkit-fill-available;
+  }
+}
