@@ -43,7 +43,7 @@ const UploadPage = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center p-4">
+    <div className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden p-4 bg-background">
       <WaveBackground />
 
       <div className="relative z-10 flex flex-col items-center text-center animate-fade-in-up">
