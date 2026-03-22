@@ -1,4 +1,4 @@
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 export async function uploadPDF(file: File): Promise<{ session_id: string; chunks_created: number }> {
   const formData = new FormData();
