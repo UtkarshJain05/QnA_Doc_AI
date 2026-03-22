@@ -15,6 +15,8 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
+          # Silently copy the hidden config into a temporary README
+          cp .github/hf-config.md backend/README.md
           cd backend
           git init
           git branch -M main
