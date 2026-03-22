@@ -4,6 +4,16 @@ A full-stack Retrieval-Augmented Generation (RAG) application that allows users 
 
 This project utilizes advanced vector embeddings, semantic search, and large language models, with a built-in OCR fallback for complex scanned documents.
 
+## 📸 Application Interface
+
+<div align="center">
+  <img src="screenshots/upload-page.png" alt="Upload Interface" width="45%" />
+  &nbsp; &nbsp; &nbsp;
+  <img src="screenshots/chat-page.png" alt="Chat Interface" width="45%" />
+</div>
+
+<br/>
+
 ## 🚀 Tech Stack
 
 - **Frontend:** React, TypeScript, Vite, Tailwind CSS, Shadcn UI
