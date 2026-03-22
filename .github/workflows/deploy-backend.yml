@@ -1,12 +1,8 @@
 name: Deploy Backend to Hugging Face
 
-# This tells GitHub to only run this script when you push changes to the main branch
-# AND only if files inside the "backend" folder were actually changed.
+# This creates a manual button in GitHub Actions so you control deployments
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - "backend/**"
+  workflow_dispatch: 
 
 jobs:
   deploy:
@@ -25,6 +21,5 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add .
-          git commit -m "Auto-deploy from GitHub"
-          # FORCE PUSH strictly the backend folder to Hugging Face
+          git commit -m "Manual deploy from GitHub"
           git push --force https://user:$HF_TOKEN@huggingface.co/spaces/Utkarshjain05/qna-doc-backend main
