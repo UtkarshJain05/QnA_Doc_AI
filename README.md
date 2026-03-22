@@ -13,9 +13,9 @@ This project utilizes advanced vector embeddings, semantic search, and large lan
 ## 📸 Application Interface
 
 <div align="center">
-  <img src="screenshots/upload-page.png" alt="Upload Interface" width="48%" />
+  <img src="screenshots/upload-page.png" alt="Upload Interface" width="50%" />
   &nbsp; &nbsp; &nbsp;
-  <img src="screenshots/chat-page.png" alt="Chat Interface" width="48%" />
+  <img src="screenshots/chat-page.png" alt="Chat Interface" width="50%" />
 </div>
 
 <br/>
