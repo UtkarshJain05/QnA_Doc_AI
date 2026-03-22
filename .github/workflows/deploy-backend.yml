@@ -1,0 +1,30 @@
+name: Deploy Backend to Hugging Face
+
+# This tells GitHub to only run this script when you push changes to the main branch
+# AND only if files inside the "backend" folder were actually changed.
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "backend/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Push to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          cd backend
+          git init
+          git branch -M main
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Auto-deploy from GitHub"
+          # FORCE PUSH strictly the backend folder to Hugging Face
+          git push --force https://user:$HF_TOKEN@huggingface.co/spaces/Utkarshjain05/qna-doc-backend main
