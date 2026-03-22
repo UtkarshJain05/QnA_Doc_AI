@@ -87,7 +87,8 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="relative flex h-screen flex-col">
+    // FIX 1: Changed h-screen to h-[100dvh] and added overflow-hidden to lock the background
+    <div className="relative flex h-[100dvh] w-full flex-col overflow-hidden">
       <WaveBackground />
       <HeaderBar onNewPdf={handleNewPdf} onEndSession={handleEndSession} />
 
@@ -110,7 +111,8 @@ const ChatPage = () => {
             onKeyDown={handleKeyDown}
             placeholder="Ask a question about the document..."
             rows={1}
-            className="flex-1 resize-none rounded-xl border border-border bg-secondary px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            // FIX 2: Changed text-sm to text-base (16px) to prevent iOS automatic zooming
+            className="flex-1 resize-none rounded-xl border border-border bg-secondary px-3 py-2.5 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             style={{ maxHeight: 150 }}
           />
           <Button
