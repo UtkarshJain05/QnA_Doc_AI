@@ -8,7 +8,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Allow frontend applications to call this API
+# Allow frontend applications to call this AP
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Change this to your frontend URL in production
