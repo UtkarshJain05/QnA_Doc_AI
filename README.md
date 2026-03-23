@@ -18,6 +18,14 @@ This project utilizes advanced vector embeddings, semantic search, and large lan
 
 <br/>
 
+## 🔄 Workflow Diagram
+
+<div align="center">
+  <img src="screenshots/workflow.png" alt="Workflow Diagram" width="100%" />
+</div>
+
+<br/>
+
 ## 🚀 Tech Stack
 
 - **Frontend:** React, TypeScript, Vite, Tailwind CSS, Shadcn UI
