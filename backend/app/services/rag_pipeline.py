@@ -57,7 +57,13 @@ def ingest_pdf_text(raw_text: str, session_id: str, filename: str, file_path: st
         raise Exception("Document too large. Please upload a smaller PDF.")
 
     # Step 2: Generate embeddings
-    vectors = embeddings.embed_documents(chunks)
+    BATCH_SIZE = 100
+    vectors = []
+    
+    for i in range(0, len(chunks), BATCH_SIZE):
+        batch = chunks[i : i + BATCH_SIZE]
+        batch_vectors = embeddings.embed_documents(batch)
+        vectors.extend(batch_vectors)
 
     # Step 3: Prepare records for Supabase
     data = []

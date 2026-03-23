@@ -1,3 +1,5 @@
+import asyncio
+import time
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from pydantic import BaseModel
 import os
@@ -42,6 +44,9 @@ async def ask(request: QueryRequest):
 @router.post("/upload")
 async def upload_pdf(file: UploadFile = File(...)):
 
+    # ⏱️ START THE CLOCK HERE
+    start_time = time.time()
+
     if not file.filename.lower().endswith(".pdf"):
         raise HTTPException(
             status_code=400,
@@ -65,7 +70,8 @@ async def upload_pdf(file: UploadFile = File(...)):
         buffer.write(file_bytes)
 
     try:
-        raw_text = extract_text_from_pdf(file_path)
+        # ⚡ OPTIMIZED: Push heavy CPU parsing to a background thread
+        raw_text = await asyncio.to_thread(extract_text_from_pdf, file_path)
 
         if not raw_text.strip():
             raise HTTPException(
@@ -73,8 +79,10 @@ async def upload_pdf(file: UploadFile = File(...)):
                 detail="No text could be extracted from this PDF.",
             )
 
-        # Move chunking + embedding logic inside service
-        chunks_created = ingest_pdf_text(raw_text, session_id, file.filename, file_path)
+        # ⚡ OPTIMIZED: Push heavy network embeddings to a background thread
+        chunks_created = await asyncio.to_thread(
+            ingest_pdf_text, raw_text, session_id, file.filename, file_path
+        )
     except HTTPException:
         raise
 
@@ -93,6 +101,11 @@ async def upload_pdf(file: UploadFile = File(...)):
         if os.path.exists(file_path):
             os.remove(file_path)
             print("Temporary PDF deleted:", file_path)
+        
+    # ⏱️ STOP THE CLOCK RIGHT BEFORE THE RETURN
+    end_time = time.time()
+    elapsed_time = round(end_time - start_time, 2) # Rounds to 2 decimal places
+    print(f"🚀 PDF Processing completed in: {elapsed_time} seconds")
 
     return {
         "message": "PDF processed successfully",

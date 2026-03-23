@@ -39,7 +39,7 @@ def extract_text_from_pdf(file_path: str) -> str:
             # OCR fallback for this specific page
             images = convert_from_path(
                 file_path,
-                dpi=300,
+                dpi=220,
                 poppler_path=POPPLER_PATH,
                 first_page=page_index + 1,
                 last_page=page_index + 1,
