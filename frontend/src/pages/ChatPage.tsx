@@ -15,7 +15,7 @@ interface Message {
 }
 
 const WELCOME_MESSAGE =
-  "👋 Hello! I'm QnA Bot 📄\nYour document has been successfully uploaded and processed.\nAsk me anything about it, and I'll answer using the information inside your PDF.";
+  "👋 Hello! I am QnA Bot.\nYour document is successfully processed and ready.\nWhat would you like to ask about it?";
 
 const ChatPage = () => {
   const [messages, setMessages] = useState<Message[]>([
