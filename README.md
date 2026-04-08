@@ -97,3 +97,12 @@ To run this project locally, you must run both the backend API and the frontend 
 
 ## 🗄️ Database Architecture
 This application requires a Supabase instance with the `pgvector` extension enabled. The database handles autonomous cleanup via a `pg_cron` job that permanently deletes vector embeddings and chat sessions older than 1 hour to ensure data privacy.
+
+---
+
+## ⚙️ Infrastructure Automation
+
+To ensure continuous availability and prevent free-tier sleep cycles, this project utilizes scheduled GitHub Actions. A daily automated workflow sends a targeted heartbeat request to the backend. This setup serves two purposes:
+1. Prevents the Hugging Face Space from entering its 48-hour inactivity sleep cycle.
+2. Registers as an active external API connection to Supabase, bypassing the 7-day inactivity pause. 
+This automated CI/CD pipeline ensures the application is always ready for user interaction without requiring manual wake-ups.
