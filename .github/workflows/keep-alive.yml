@@ -1,0 +1,20 @@
+name: Daily Keep-Alive Ping
+
+on:
+  schedule:
+    # This cron expression runs the job every 24 hours at midnight UTC
+    - cron: '0 0 * * *'
+  # This line is crucial: it adds a button so we can test it manually!
+  workflow_dispatch: 
+
+jobs:
+  ping-services:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Backend to Wake HF and Supabase
+        run: |
+          echo "Pinging Hugging Face Space API..."
+          # We use a completely fake session ID so no real data is ever touched
+          curl -X DELETE "https://utkarshjain05-qna-doc-backend.hf.space/session/automated-keep-alive-ping" \
+          -H "Accept: application/json"
+          echo -e "\nKeep-alive ping sent successfully!"
