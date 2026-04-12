@@ -5,7 +5,7 @@
 </div>
 
 <br/>
-
+ 
 🎯 A full-stack Retrieval-Augmented Generation (RAG) application that allows users to upload PDF documents and have intelligent, context-aware conversations about the content. 
 
 This project utilizes advanced vector embeddings, semantic search, and large language models, with a built-in OCR fallback for complex scanned documents.
