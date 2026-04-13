@@ -70,6 +70,7 @@ async def upload_pdf(file: UploadFile = File(...)):
         buffer.write(file_bytes)
 
     try:
+        print(f"⏱️ Handoff to background thread: Text Extraction")
         # ⚡ OPTIMIZED: Push heavy CPU parsing to a background thread
         raw_text = await asyncio.to_thread(extract_text_from_pdf, file_path)
 
@@ -80,6 +81,7 @@ async def upload_pdf(file: UploadFile = File(...)):
             )
 
         # ⚡ OPTIMIZED: Push heavy network embeddings to a background thread
+        print(f"⏱️ Handoff to background thread: RAG Ingestion")
         chunks_created = await asyncio.to_thread(
             ingest_pdf_text, raw_text, session_id, file.filename, file_path
         )

@@ -1,5 +1,6 @@
 import os
 import pytesseract
+import time
 
 from pdf2image import convert_from_path
 from pypdf import PdfReader
@@ -18,6 +19,9 @@ OCR_TEXT_THRESHOLD = 50
 
 
 def extract_text_from_pdf(file_path: str) -> str:
+    print(f"📄 [START] Extracting text from: {file_path}")
+    start_time = time.time()
+    
     """
     Hybrid PDF text extraction:
     1. Try direct text extraction (digital PDFs)
@@ -27,6 +31,7 @@ def extract_text_from_pdf(file_path: str) -> str:
     reader = PdfReader(file_path)
 
     full_text = []
+    ocr_pages = 0
 
     for page_index, page in enumerate(reader.pages):
 
@@ -37,6 +42,8 @@ def extract_text_from_pdf(file_path: str) -> str:
         
         else:
             # OCR fallback for this specific page
+            print(f"   ⚠️ Page {page_index + 1} lacks digital text. Triggering OCR fallback...")
+            ocr_pages += 1
             images = convert_from_path(
                 file_path,
                 dpi=220,
@@ -58,5 +65,7 @@ def extract_text_from_pdf(file_path: str) -> str:
 
             if ocr_text.strip():
                 full_text.append(ocr_text.strip())
-
+                
+    elapsed = round(time.time() - start_time, 2)
+    print(f"✅ [DONE] Text extraction complete in {elapsed}s. (OCR used on {ocr_pages} pages)")
     return "\n\n".join(full_text)

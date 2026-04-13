@@ -1,3 +1,4 @@
+import time
 import logging 
 from supabase import create_client
 
@@ -45,27 +46,34 @@ def ingest_pdf_text(raw_text: str, session_id: str, filename: str, file_path: st
         )
     
     # Step 1: Split text into chunks
-    splitter = RecursiveCharacterTextSplitter(
-        chunk_size=800,
-        chunk_overlap=150,
-    )
-    
+    print("🔪 [START] Splitting text into chunks...")
+    splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=150)
     chunks = splitter.split_text(raw_text)
+    print(f"✅ [DONE] Created {len(chunks)} chunks.")
     
     MAX_CHUNKS = 1500
     if len(chunks) > MAX_CHUNKS:
         raise Exception("Document too large. Please upload a smaller PDF.")
 
     # Step 2: Generate embeddings
+    print(f"🧠 [START] Generating embeddings for {len(chunks)} chunks...")
+    embed_start = time.time()
     BATCH_SIZE = 100
     vectors = []
     
     for i in range(0, len(chunks), BATCH_SIZE):
+        print(f"   -> Processing batch {i // BATCH_SIZE + 1}...")
         batch = chunks[i : i + BATCH_SIZE]
         batch_vectors = embeddings.embed_documents(batch)
         vectors.extend(batch_vectors)
+    
+    embed_elapsed = round(time.time() - embed_start, 2)
+    print(f"✅ [DONE] Embeddings generated in {embed_elapsed}s.")
 
     # Step 3: Prepare records for Supabase
+    print("💾 [START] Pushing vectors to Supabase...")
+    db_start = time.time()
+
     data = []
     for text, vector in zip(chunks, vectors):
         data.append(
@@ -85,6 +93,9 @@ def ingest_pdf_text(raw_text: str, session_id: str, filename: str, file_path: st
 
     if response.data is None:
         raise Exception("Failed to insert embeddings into database.")
+    
+    db_elapsed = round(time.time() - db_start, 2)
+    print(f"✅ [DONE] Supabase insertion complete in {db_elapsed}s.")
     
     return len(chunks)
 
