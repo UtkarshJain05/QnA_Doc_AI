@@ -8,7 +8,7 @@
  
 🎯 A full-stack Retrieval-Augmented Generation (RAG) application that allows users to upload PDF documents and have intelligent, context-aware conversations about the content. 
 
-This project utilizes advanced vector embeddings, semantic search, and large language models, with a built-in OCR fallback for complex scanned documents.
+This project utilizes advanced vector embeddings, semantic search, and large language models, featuring a dual-pipeline text extractor: a blazingly fast PyMuPDF engine for digital text, and an optimized, multi-threaded Tesseract OCR fallback for complex scanned documents.
 
 ## 📸 Application Interface
 
@@ -28,10 +28,10 @@ This project utilizes advanced vector embeddings, semantic search, and large lan
 
 ## 🚀 Tech Stack
 
-- **Frontend:** React, TypeScript, Vite, Tailwind CSS, Shadcn UI
-- **Backend:** Python, FastAPI
-- **Database:** PostgreSQL (Supabase) with `pgvector`
-- **AI & Processing:** Groq (LLM Inference), HuggingFace (Embeddings), Tesseract/Poppler (OCR)
+- **Frontend:** React, TypeScript, Vite, Tailwind CSS, Shadcn UI (Markdown Rendering & SSE Streaming)
+- **Backend:** Python, FastAPI (Async Background Processing)
+- **Database:** PostgreSQL (Supabase) with `pgvector` & Batched Insertions
+- **AI & Processing:** Groq (Llama-3.3 LLM), Hugging Face (Endpoint Embeddings API), PyMuPDF & Parallel Tesseract/Poppler (Extraction)
 
 ---
 
@@ -83,7 +83,7 @@ To run this project locally, you must run both the backend API and the frontend 
    ```bash
    cd frontend
    ```
-2. Install Node dependencies:
+2. Install Node dependencies (including react-markdown):
    ```bash
    npm install
    ```
