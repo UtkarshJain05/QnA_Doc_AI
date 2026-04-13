@@ -24,7 +24,7 @@ def process_single_page(page_index, file_path):
     # where Tesseract can still read perfectly but the image is 50% smaller.
     images = convert_from_path(
         file_path,
-        dpi=130,           
+        dpi=150,           
         fmt='jpeg',        # JPEG processes faster in RAM than PNG
         thread_count=2,    # Tell Poppler to use multiple threads just for extraction
         poppler_path=POPPLER_PATH,
@@ -65,6 +65,7 @@ def extract_text_from_pdf(file_path: str) -> str:
 
     # Step 2: Parallel OCR Processing
     if pages_needing_ocr:
+        ocr_start_time = time.time()
         print(f"   ⚠️ {len(pages_needing_ocr)} pages sent to OCR multi-threading...")
         
         # SPEED HACK 4: Multi-threading
@@ -85,6 +86,8 @@ def extract_text_from_pdf(file_path: str) -> str:
                 except Exception as exc:
                     print(f"❌ Page {page_idx + 1} OCR failed: {exc}")
 
+        ocr_elapsed = round(time.time() - ocr_start_time, 2)
+        print(f"   ✅ [OCR DONE] Processed {len(pages_needing_ocr)} image pages in {ocr_elapsed}s.")
     # Step 3: Reassemble the document in the correct page order
     ordered_text = [full_text_dict[i] for i in range(len(reader.pages)) if i in full_text_dict]
     
