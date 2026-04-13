@@ -3,7 +3,7 @@ import pytesseract
 import time
 import concurrent.futures
 from pdf2image import convert_from_path
-from pypdf import PdfReader
+import fitz  # PyMuPDF
 from PIL import ImageOps
 
 from app.config import SUPABASE_URL  # just to ensure config loads
@@ -50,26 +50,26 @@ def process_single_page(page_index, file_path):
 def extract_text_from_pdf(file_path: str) -> str:
     start_time = time.time()
 
-    reader = PdfReader(file_path)
+    # ⚡ PyMuPDF Engine Initiation
+    doc = fitz.open(file_path)
     full_text_dict = {} 
     pages_needing_ocr = []
 
     # Step 1: Lightning-fast digital text pass
-    for page_index, page in enumerate(reader.pages):
-        text = page.extract_text() or ""
+    for page_index in range(len(doc)):
+        page = doc.load_page(page_index)
+        text = page.get_text() or ""
+        
         if len(text.strip()) >= OCR_TEXT_THRESHOLD:
             full_text_dict[page_index] = text.strip()
         else:
             pages_needing_ocr.append(page_index)
 
-    # Step 2: Parallel OCR Processing
+    # Step 2: Parallel OCR Processing (Unchanged)
     if pages_needing_ocr:
         ocr_start_time = time.time()
         print(f"   ⚠️ {len(pages_needing_ocr)} pages sent to OCR multi-threading...")
         
-        # SPEED HACK 4: Multi-threading
-        # Hugging Face free tier has limited vCPUs. Max workers = 3 prevents 
-        # the container from crashing while processing 3 pages simultaneously.
         with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
             future_to_page = {
                 executor.submit(process_single_page, page_idx, file_path): page_idx 
@@ -87,8 +87,12 @@ def extract_text_from_pdf(file_path: str) -> str:
 
         ocr_elapsed = round(time.time() - ocr_start_time, 2)
         print(f"   ✅ [OCR DONE] Processed {len(pages_needing_ocr)} image pages in {ocr_elapsed}s.")
-    # Step 3: Reassemble the document in the correct page order
-    ordered_text = [full_text_dict[i] for i in range(len(reader.pages)) if i in full_text_dict]
+
+    # Step 3: Reassemble the document using the length of the 'doc' object
+    ordered_text = [full_text_dict[i] for i in range(len(doc)) if i in full_text_dict]
+    
+    # Free up memory immediately after extraction
+    doc.close()
     
     elapsed = round(time.time() - start_time, 2)
     print(f"✅ [DONE] Extraction complete in {elapsed}s.")
