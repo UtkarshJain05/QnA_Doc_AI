@@ -54,9 +54,12 @@ def extract_text_from_pdf(file_path: str) -> str:
     doc = fitz.open(file_path)
     full_text_dict = {} 
     pages_needing_ocr = []
+    
+    # Save the total pages before we close the document
+    total_pages = len(doc)
 
     # Step 1: Lightning-fast digital text pass
-    for page_index in range(len(doc)):
+    for page_index in range(total_pages):
         page = doc.load_page(page_index)
         text = page.get_text() or ""
         
@@ -65,7 +68,11 @@ def extract_text_from_pdf(file_path: str) -> str:
         else:
             pages_needing_ocr.append(page_index)
 
-    # Step 2: Parallel OCR Processing (Unchanged)
+    # ⚡ CRITICAL FIX: Close the C++ document immediately to free up RAM 
+    # and release the file lock BEFORE the heavy OCR threads start.
+    doc.close()
+
+    # Step 2: Parallel OCR Processing
     if pages_needing_ocr:
         ocr_start_time = time.time()
         print(f"   ⚠️ {len(pages_needing_ocr)} pages sent to OCR multi-threading...")
@@ -88,11 +95,8 @@ def extract_text_from_pdf(file_path: str) -> str:
         ocr_elapsed = round(time.time() - ocr_start_time, 2)
         print(f"   ✅ [OCR DONE] Processed {len(pages_needing_ocr)} image pages in {ocr_elapsed}s.")
 
-    # Step 3: Reassemble the document using the length of the 'doc' object
-    ordered_text = [full_text_dict[i] for i in range(len(doc)) if i in full_text_dict]
-    
-    # Free up memory immediately after extraction
-    doc.close()
+    # Step 3: Reassemble the document using the saved total_pages integer
+    ordered_text = [full_text_dict[i] for i in range(total_pages) if i in full_text_dict]
     
     elapsed = round(time.time() - start_time, 2)
     print(f"✅ [DONE] Extraction complete in {elapsed}s.")
