@@ -31,41 +31,48 @@ def extract_text_from_pdf(file_path: str) -> str:
     reader = PdfReader(file_path)
 
     full_text = []
-    ocr_pages = 0
+    # ocr_pages = 0
 
     for page_index, page in enumerate(reader.pages):
 
         text = page.extract_text() or ""
-
-        if len(text.strip()) >= OCR_TEXT_THRESHOLD:
+        if text.strip():
             full_text.append(text.strip())
-        
-        else:
-            # OCR fallback for this specific page
-            print(f"   ⚠️ Page {page_index + 1} lacks digital text. Triggering OCR fallback...")
-            ocr_pages += 1
-            images = convert_from_path(
-                file_path,
-                dpi=220,
-                poppler_path=POPPLER_PATH,
-                first_page=page_index + 1,
-                last_page=page_index + 1,
-            )
-
-            ocr_text = ""
-
-            for img in images:
-                gray = ImageOps.grayscale(img)
-
-                ocr_text += pytesseract.image_to_string(
-                    gray,
-                    config="--oem 3 --psm 6",
-                )
-                
-
-            if ocr_text.strip():
-                full_text.append(ocr_text.strip())
-                
+            
     elapsed = round(time.time() - start_time, 2)
-    print(f"✅ [DONE] Text extraction complete in {elapsed}s. (OCR used on {ocr_pages} pages)")
+    print(f"✅ [DONE] Text extraction complete in {elapsed}s.")
+
     return "\n\n".join(full_text)
+
+    #     if len(text.strip()) >= OCR_TEXT_THRESHOLD:
+    #         full_text.append(text.strip())
+        
+    #     else:
+    #         # OCR fallback for this specific page
+    #         print(f"   ⚠️ Page {page_index + 1} lacks digital text. Triggering OCR fallback...")
+    #         ocr_pages += 1
+    #         images = convert_from_path(
+    #             file_path,
+    #             dpi=220,
+    #             poppler_path=POPPLER_PATH,
+    #             first_page=page_index + 1,
+    #             last_page=page_index + 1,
+    #         )
+
+    #         ocr_text = ""
+
+    #         for img in images:
+    #             gray = ImageOps.grayscale(img)
+
+    #             ocr_text += pytesseract.image_to_string(
+    #                 gray,
+    #                 config="--oem 3 --psm 6",
+    #             )
+                
+
+    #         if ocr_text.strip():
+    #             full_text.append(ocr_text.strip())
+
+    # elapsed = round(time.time() - start_time, 2)
+    # print(f"✅ [DONE] Text extraction complete in {elapsed}s. (OCR used on {ocr_pages} pages)")
+    # return "\n\n".join(full_text)
