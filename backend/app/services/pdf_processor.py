@@ -48,7 +48,6 @@ def process_single_page(page_index, file_path):
 
 
 def extract_text_from_pdf(file_path: str) -> str:
-    print(f"📄 [START] Extracting text with Hyper-Optimized OCR: {file_path}")
     start_time = time.time()
 
     reader = PdfReader(file_path)

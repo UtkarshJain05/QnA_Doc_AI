@@ -46,7 +46,6 @@ def ingest_pdf_text(raw_text: str, session_id: str, filename: str, file_path: st
         )
     
     # Step 1: Split text into chunks
-    print("🔪 [START] Splitting text into chunks...")
     splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=150)
     chunks = splitter.split_text(raw_text)
     print(f"✅ [DONE] Created {len(chunks)} chunks.")
@@ -56,22 +55,19 @@ def ingest_pdf_text(raw_text: str, session_id: str, filename: str, file_path: st
         raise Exception("Document too large. Please upload a smaller PDF.")
 
     # Step 2: Generate embeddings
-    print(f"🧠 [START] Generating embeddings for {len(chunks)} chunks...")
     embed_start = time.time()
     BATCH_SIZE = 100
     vectors = []
     
     for i in range(0, len(chunks), BATCH_SIZE):
-        print(f"   -> Processing batch {i // BATCH_SIZE + 1}...")
         batch = chunks[i : i + BATCH_SIZE]
         batch_vectors = embeddings.embed_documents(batch)
         vectors.extend(batch_vectors)
     
     embed_elapsed = round(time.time() - embed_start, 2)
-    print(f"✅ [DONE] Embeddings generated in {embed_elapsed}s.")
+    print(f"✅ [DONE] Embeddings generated for {len(chunks)} chunks in {embed_elapsed}s.")
 
     # Step 3: Prepare records for Supabase
-    print("💾 [START] Pushing vectors to Supabase...")
     db_start = time.time()
 
     data = []
@@ -89,7 +85,10 @@ def ingest_pdf_text(raw_text: str, session_id: str, filename: str, file_path: st
         )
 
     # Step 4: Insert into Supabase
-    response = supabase.table("documents").insert(data).execute()
+    INSERT_BATCH_SIZE = 300
+    for i in range(0, len(data), INSERT_BATCH_SIZE):
+        batch = data[i : i + INSERT_BATCH_SIZE]
+        response = supabase.table("documents").insert(batch).execute()
 
     if response.data is None:
         raise Exception("Failed to insert embeddings into database.")
@@ -124,16 +123,18 @@ def retrieve_similar(query: str, session_id: str, limit: int = 5):
 # Question Answering
 # -------------------------
 
-def ask_question(query: str, session_id: str):
+def ask_question_stream(query: str, session_id: str):
     query_lower = query.lower().strip()
 
     if query_lower in ["hi", "hello", "hey"]:
-        return "Hello! I'm QnA Bot. Ask me anything about your Doc."
+        yield "Hello! I'm QnA Bot. Ask me anything about your Doc."
+        return
     
     matches = retrieve_similar(query, session_id)
 
     if not matches:
-        return "The information is not available in the uploaded document."
+        yield "The information is not available in the uploaded document."
+        return
 
     # use matches directly (no strict filtering)
     formatted_excerpts = [
@@ -172,12 +173,13 @@ User Question:
 """
 
     try:
-        response = llm.invoke(final_prompt)
-        return response.content
+        for chunk in llm.stream(final_prompt):
+            if chunk.content:
+                yield chunk.content
 
     except Exception as e:
         logging.error(f"Error querying llm API endpoint: {e}")
-        return "⚠️ The AI service is temporarily busy. Please try again in a few moments."
+        yield "⚠️ The AI service is temporarily busy. Please try again in a few moments."
 
 
 # -------------------------

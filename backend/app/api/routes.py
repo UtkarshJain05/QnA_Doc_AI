@@ -5,9 +5,10 @@ from pydantic import BaseModel
 import os
 import uuid
 
+from fastapi.responses import StreamingResponse
 from app.services.pdf_processor import extract_text_from_pdf
 from app.services.rag_pipeline import (
-    ask_question,
+    ask_question_stream,
     ingest_pdf_text,
     delete_session_data,
 )
@@ -30,11 +31,10 @@ class QueryRequest(BaseModel):
 
 @router.post("/ask")
 async def ask(request: QueryRequest):
-    answer = ask_question(request.question, request.session_id)
-    return {
-    "answer": answer,
-    "session_id": request.session_id
-    }
+    return StreamingResponse(
+        ask_question_stream(request.question, request.session_id),
+        media_type="text/event-stream"
+    )
 
 
 # -------------------------
@@ -70,7 +70,6 @@ async def upload_pdf(file: UploadFile = File(...)):
         buffer.write(file_bytes)
 
     try:
-        print(f"⏱️ Handoff to background thread: Text Extraction")
         # ⚡ OPTIMIZED: Push heavy CPU parsing to a background thread
         raw_text = await asyncio.to_thread(extract_text_from_pdf, file_path)
 
@@ -81,7 +80,6 @@ async def upload_pdf(file: UploadFile = File(...)):
             )
 
         # ⚡ OPTIMIZED: Push heavy network embeddings to a background thread
-        print(f"⏱️ Handoff to background thread: RAG Ingestion")
         chunks_created = await asyncio.to_thread(
             ingest_pdf_text, raw_text, session_id, file.filename, file_path
         )
