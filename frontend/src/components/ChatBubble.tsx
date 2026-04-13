@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import ReactMarkdown from "react-markdown";
 
 interface ChatBubbleProps {
   message: string;
@@ -16,7 +17,18 @@ const ChatBubble = ({ message, isUser }: ChatBubbleProps) => {
             : "bg-secondary text-foreground rounded-bl-md"
         )}
       >
-        {message}
+        <ReactMarkdown
+          components={{
+            // Map Markdown elements to Tailwind classes so they render beautifully
+            p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+            strong: ({ node, ...props }) => <strong className="font-semibold" {...props} />,
+            ul: ({ node, ...props }) => <ul className="list-disc pl-5 mb-2" {...props} />,
+            ol: ({ node, ...props }) => <ol className="list-decimal pl-5 mb-2" {...props} />,
+            li: ({ node, ...props }) => <li className="mb-1" {...props} />,
+          }}
+        >
+          {message}
+        </ReactMarkdown>
       </div>
     </div>
   );
