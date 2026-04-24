@@ -31,7 +31,7 @@ This project utilizes advanced vector embeddings, semantic search, and large lan
 - **Frontend:** React, TypeScript, Vite, Tailwind CSS, Shadcn UI (Markdown Rendering & SSE Streaming)
 - **Backend:** Python, FastAPI (Async Background Processing)
 - **Database:** PostgreSQL (Supabase) with `pgvector` & Batched Insertions
-- **AI & Processing:** Groq (Llama-3.3 LLM), Hugging Face (Endpoint Embeddings API), PyMuPDF & Parallel Tesseract/Poppler (Extraction)
+- **AI & Processing:** Groq (Llama-3.3 LLM), Hugging Face (all-MiniLM-L6-v2), PyMuPDF & Parallel Tesseract/Poppler (Extraction)
 
 ---
 
