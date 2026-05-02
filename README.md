@@ -4,7 +4,7 @@
   <h3>Intelligent PDF Assistant (RAG Pipeline)</h3>
 </div>
 
-<br/>
+<br/> 
  
 🎯 A full-stack Retrieval-Augmented Generation (RAG) application that allows users to upload PDF documents and have intelligent, context-aware conversations about the content. 
 
