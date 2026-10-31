@@ -5,12 +5,11 @@ from supabase import create_client
 from app.config import (
     SUPABASE_URL,
     SUPABASE_KEY,
-    HUGGINGFACEHUB_API_TOKEN,
     GROQ_API_KEY,
 )
 
 from langchain_groq import ChatGroq
-from langchain_huggingface import HuggingFaceEndpointEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # -------------------------
@@ -19,9 +18,8 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-embeddings = HuggingFaceEndpointEmbeddings(
-    model="sentence-transformers/all-MiniLM-L6-v2",
-    huggingfacehub_api_token=HUGGINGFACEHUB_API_TOKEN,
+embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2"
 )
 
 llm = ChatGroq(
