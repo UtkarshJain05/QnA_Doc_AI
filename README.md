@@ -31,7 +31,7 @@ This project utilizes advanced vector embeddings, semantic search, and large lan
 - **Frontend:** React, TypeScript, Vite, Tailwind CSS, Shadcn UI (Markdown Rendering & SSE Streaming)
 - **Backend:** Python, FastAPI (Async Background Processing)
 - **Database:** PostgreSQL (Supabase) with `pgvector` & Batched Insertions
-- **AI & Processing:** Groq (OpenAI GPT OSS 120B LLM), Hugging Face (all-MiniLM-L6-v2), PyMuPDF & Parallel Tesseract/Poppler (Extraction)
+- **AI & Processing:** Groq (OpenAI GPT OSS 120B LLM), Local Sentence-Transformers (all-MiniLM-L6-v2), PyMuPDF & Parallel Tesseract/Poppler (Extraction)
 
 ---
 
@@ -63,7 +63,6 @@ To run this project locally, you must run both the backend API and the frontend 
    ```env
    SUPABASE_URL=your_supabase_project_url
    SUPABASE_KEY=your_supabase_service_role_key
-   HUGGINGFACEHUB_API_TOKEN=your_huggingface_token
    GROQ_API_KEY=your_groq_api_key
    
    # Update these paths to match where you installed/extracted them on your machine
@@ -76,6 +75,8 @@ To run this project locally, you must run both the backend API and the frontend 
    uvicorn app.main:app --reload
    ```
    *The backend runs on `http://127.0.0.1:8000`*
+
+   *Note: On the very first boot, the server will pause for a few seconds to automatically download and cache the 80MB embedding model locally to your machine.*
 
 ### 2. Frontend Configuration (React)
 
